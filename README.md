@@ -16,3 +16,8 @@ It saves the data in a Mongo database
 - schedule
 
 - time
+
+# Required Webdriver
+
+- Chrome
+https://chromedriver.chromium.org/
