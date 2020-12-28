@@ -1,6 +1,6 @@
 # yts-movie-scraper
 
-This is a simple script to extract movie data form yts.mx movies.
+This is a simple script to extract movie data from yts.mx movies.
 It saves the data in a Mongo database
 
 # Required libraries
