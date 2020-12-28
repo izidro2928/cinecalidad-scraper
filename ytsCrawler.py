@@ -1,8 +1,6 @@
 from selenium import webdriver
-import schedule
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
-import time
 from pymongo import MongoClient
 from fake_useragent import UserAgent
 
@@ -65,8 +63,7 @@ def extraer_cinecalidad():
                 print(duracion)
                 magnet1 = navegador.find_element_by_xpath("//a[@class='magnet-download download-torrent magnet'][1]").get_attribute('href')
                 print(magnet1)
-                # magnet2 = navegador.find_element_by_xpath("//div[@class='main-content']//div[@class='modal-content']//div[2]/a[2]").get_attribute('href')
-                # print(magnet2)
+                
                 #Guardamos los datos en MongoDB
                 col.update_one({
                     'titulo': titulo
@@ -83,7 +80,6 @@ def extraer_cinecalidad():
                         'rated': rated,
                         'duracion': duracion,
                         'magnet1': magnet1,
-                        'magne2t': [],
                     }
                 }, upsert=True)
                 navegador.back()
