@@ -14,7 +14,7 @@ client = MongoClient('localhost')
 db = client['yts_db']
 col = db['yts_peliculas']
 
-def extraer_cinecalidad():
+def extraer_yts():
     navegador = webdriver.Chrome(options=options)
     navegador.get("https://yts.mx/browse-movies?page=25")
 
@@ -94,4 +94,4 @@ def extraer_cinecalidad():
             print(f"####################{pagina_siguiente}######################")
         except:
             break
-extraer_cinecalidad()
+extraer_yts()
