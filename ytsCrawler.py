@@ -16,7 +16,7 @@ col = db['yts_peliculas']
 
 def extraer_yts():
     navegador = webdriver.Chrome(options=options)
-    navegador.get("https://yts.mx/browse-movies?page=25")
+    navegador.get("https://yts.mx/browse-movies")
 
     while True:
         links_pagina = navegador.find_elements_by_xpath('//a[@class="browse-movie-link"]')
