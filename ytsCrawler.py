@@ -3,6 +3,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 from fake_useragent import UserAgent
+import time
 
 options = Options()
 ua = UserAgent()
