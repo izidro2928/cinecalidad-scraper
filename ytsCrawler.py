@@ -4,6 +4,10 @@ from selenium.webdriver.chrome.options import Options
 from pymongo import MongoClient
 from fake_useragent import UserAgent
 import time
+import mysql.connector
+
+db = mysql.connector.connect(host="localhost", user="root", passwd="root", database="data_scrapper")
+cursor = db.cursor()
 
 options = Options()
 ua = UserAgent()
@@ -11,13 +15,11 @@ userAgent = ua.random
 print(userAgent)
 options.add_argument(f'user-agent={userAgent}')
 
-client = MongoClient('localhost')
-db = client['yts_db']
-col = db['yts_peliculas']
+
 
 def extraer_yts():
     navegador = webdriver.Chrome(options=options)
-    navegador.get("https://yts.mx/browse-movies")
+    navegador.get("https://yts.mx/browse-movies?page=231")
 
     while True:
         links_pagina = navegador.find_elements_by_xpath('//a[@class="browse-movie-link"]')
@@ -27,7 +29,7 @@ def extraer_yts():
         for link in links_peliculas:
             try:
                 navegador.get(link)
-                # Extraemos los dsatos de TMDB
+                # Extraemos los dsatos de yts
                 caratula = navegador.find_element_by_xpath("//img[@class='img-responsive']").get_attribute('src')
                 print(caratula)
                 titulo = navegador.find_element_by_xpath("//div[@class='hidden-xs']/h1").text
@@ -65,24 +67,17 @@ def extraer_yts():
                 magnet1 = navegador.find_element_by_xpath("//a[@class='magnet-download download-torrent magnet'][1]").get_attribute('href')
                 print(magnet1)
                 
-                #Guardamos los datos en MongoDB
-                col.update_one({
-                    'titulo': titulo
-                }, {
-                    "$set":{
-                        'caratula': caratula,
-                        'titulo': titulo,
-                        'estreno': estreno,
-                        'genero': xgenero,
-                        'imdb': imdb,
-                        'trailer': trailer,
-                        'sinopsis': sinopsis,
-                        'director': director,
-                        'rated': rated,
-                        'duracion': duracion,
-                        'magnet1': magnet1,
-                    }
-                }, upsert=True)
+                #Guardamos los datos en Mysql
+                sql = f'SELECT * FROM movies WHERE title = "{titulo}"'
+                cursor.execute(sql)
+                movie = cursor.fetchall()
+                
+                if not movie:
+                    sql2 = f"INSERT INTO movies(title, poster, year, genre, imdb, trailer, sinopsis, director, rated, run_time, magnet_720p) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+                    values = (titulo, caratula, estreno, xgenero, imdb, trailer, sinopsis, director, rated, duracion, magnet1)
+                    cursor.execute(sql2, values)
+                    db.commit()
+                
                 navegador.back()
                 time.sleep(1)
             except Exception as e:
@@ -90,9 +85,10 @@ def extraer_yts():
                 print("Hubo un error no se pudo obtener los datos!!!")
                 navegador.back()
         try:
-            pagina_siguiente = navegador.find_element_by_xpath("//*[contains(text(), 'Next »')]")
-            pagina_siguiente.click()
-            print(f"####################{pagina_siguiente}######################")
-        except:
+            pagination = navegador.find_element_by_xpath("//div[@class='container']/div[1]/ul[@class='tsc_pagination tsc_paginationA tsc_paginationA06']//a[.='Last »']/preceding::a[1]")
+            pagination.click()
+            
+        except Exception as e:
+            print(e)
             break
 extraer_yts()
