@@ -109,7 +109,6 @@ def cinecalidad_crawler():
                 print(video6)
                 driver.switch_to.default_content()
                 driver.find_element_by_xpath('//*[@id="cambiar_servidor"]').click()
-                driver.back()
 
                 online7 = driver.find_element_by_xpath('//*[@id="panel_online"]/ul/a[7]/li')
                 online7.click()
@@ -121,15 +120,15 @@ def cinecalidad_crawler():
 
                 trailer = driver.find_element_by_xpath('//*[@id="panel_online"]/ul/a[last()]').get_attribute('data-src')
                 print(trailer)
+
             except Exception:
                 pass
-        try:
-            pagination = driver.find_element_by_class_name('nextpostslink')
-            print(pagination.get_attribute('href'))
-            pagination.click()
-        except Exception:
-            print("There was an error!")
-            driver.quit()
+            driver.back()
+
+        pagination = driver.find_element_by_xpath("//a[@class='nextpostslink'][contains(.,'»')]")
+        print(pagination.get_attribute('href'))
+        pagination.click()
+
 
 
 cinecalidad_crawler()
