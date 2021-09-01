@@ -1,17 +1,12 @@
-# yts-movie-scraper
+# cinecalidad-scraper
 
-This is a simple script to extract movie data from yts.mx movies.
-It saves the data into a MYSQL DataBase
-
+This is a simple script for scraping movies data from cinecalidad.
+You decide how you want to save the data.
 # Required libraries
 
 - selenium
 
 - fake_useragent
-
-- mysql-connector
-
-- time
 
 # If want to automitize you can install
 
